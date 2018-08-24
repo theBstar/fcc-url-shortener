@@ -3,11 +3,13 @@
 var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
+const dns = require("dns");
+const bodyParser = require("body-parser")
 
 var cors = require('cors');
 
 var app = express();
-
+app.use(bodyParser.urlencoded({ extended: true }));
 // Basic Configuration 
 var port = process.env.PORT || 3000;
 
@@ -27,7 +29,9 @@ app.get('/', function(req, res){
 
   
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
+app.post("/api/shorturl/new", function (req, res) {
+  let newUrl = req.body.url
+  dns.
   res.json({greeting: 'hello API'});
 });
 
