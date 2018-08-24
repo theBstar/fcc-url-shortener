@@ -30,9 +30,15 @@ app.get('/', function(req, res){
   
 // your first API endpoint... 
 app.post("/api/shorturl/new", function (req, res) {
-  let newUrl = req.body.url
-  dns.
-  res.json({greeting: 'hello API'});
+  let newUrl = req.body.url.replace(/https?:\/\//, "")
+  console.log(newUrl);
+  dns.lookup(newUrl, function(err){
+    if(err){
+      res.json({"error":"invalid URL"});
+    }else{
+     res.json({greeting: 'hello API'}); 
+    }
+  })
 });
 
 
