@@ -1,39 +1,37 @@
-// server.js
-// where your node app starts
+'use strict';
 
-// init project
-const express = require('express')
-const app = express()
+var express = require('express');
+var mongo = require('mongodb');
+var mongoose = require('mongoose');
 
-// we've started you off with Express, 
-// but feel free to use whatever libs or frameworks you'd like through `package.json`.
+var cors = require('cors');
 
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static('public'))
+var app = express();
 
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", (request, response) => {
-  response.sendFile(__dirname + '/views/index.html')
-})
+// Basic Configuration 
+var port = process.env.PORT || 3000;
 
-// Simple in-memory store
-const dreams = [
-  "Find and count some sheep",
-  "Climb a really tall mountain",
-  "Wash the dishes"
-]
+/** this project needs a db !! **/ 
+// mongoose.connect(process.env.MONGOLAB_URI);
 
-app.get("/dreams", (request, response) => {
-  response.send(dreams)
-})
+app.use(cors());
 
-// could also use the POST body instead of query string: http://expressjs.com/en/api.html#req.body
-app.post("/dreams", (request, response) => {
-  dreams.push(request.query.dream)
-  response.sendStatus(200)
-})
+/** this project needs to parse POST bodies **/
+// you should mount the body-parser here
 
-// listen for requests :)
-const listener = app.listen(process.env.PORT, () => {
-  console.log(`Your app is listening on port ${listener.address().port}`)
-})
+app.use('/public', express.static(process.cwd() + '/public'));
+
+app.get('/', function(req, res){
+  res.sendFile(process.cwd() + '/views/index.html');
+});
+
+  
+// your first API endpoint... 
+app.get("/api/hello", function (req, res) {
+  res.json({greeting: 'hello API'});
+});
+
+
+app.listen(port, function () {
+  console.log('Node.js listening ...');
+});
