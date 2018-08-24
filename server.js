@@ -10,6 +10,7 @@ var cors = require('cors');
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+mongoose.connect(process.env.MONGO_URI)
 // Basic Configuration 
 var port = process.env.PORT || 3000;
 
@@ -22,6 +23,12 @@ app.use(cors());
 // you should mount the body-parser here
 
 app.use('/public', express.static(process.cwd() + '/public'));
+
+const urlSchema = new mongoose.Schema({
+  storedUrl:[String]
+});
+const urlModel = mongoose.model("urlModel", urlSchema);
+
 
 app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
