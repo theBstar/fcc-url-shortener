@@ -69,7 +69,15 @@ app.post("/api/shorturl/new", function (req, res) {
 // get request to redirect the user to the original url
 app.get("/api/shorturl/:shortUrl", function(req, res){
   console.log(req.params.shortUrl)
-  new
+  newUrlModel.findOne({newUrl: req.params.shortUrl}, function(err, data){
+    if(!data){
+      console.log("error");
+      res.write("<h1>No such url shortened<, redirecting to home page/h1>")
+      setTimeout(()=>{res.redirect("/")}, 1000);
+    }else{
+      res.redirect("http://"+data.originalUrl)
+    }
+  })
 })
 
 app.listen(port, function () {
