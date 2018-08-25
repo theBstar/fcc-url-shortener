@@ -62,6 +62,7 @@ app.post("/api/shorturl/new", function (req, res) {
           })
         }
       })
+      console.log("printing tobe "+toBeSent)
       res.json(toBeSent); 
     }
   })
