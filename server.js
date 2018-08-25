@@ -28,7 +28,7 @@ const urlSchema = new mongoose.Schema({
   originalUrl:{ type:String, required: true},
   newUrl: Number
 });
-const urlModel = mongoose.model("urlModel", urlSchema);
+const newUrlModel = mongoose.model("newUrlModel", urlSchema);
 
 
 app.get('/', function(req, res){
@@ -46,24 +46,22 @@ app.post("/api/shorturl/new", function (req, res) {
       res.json({"error":"invalid URL"});
     }else{
       console.log("its is a valid url")
-      urlModel.find({originalUrl: newUrl}, function(err, data){
+      newUrlModel.findOne({originalUrl: newUrl}, function(err, data){
         if(!err){
           console.log("it already exits in the db "+ data)
-          toBeSent = Object.assign({original_url: data.originalUrl, short_url: data.newUrl})
+          res.json({original_url: data.originalUrl, short_url: data.newUrl})
         }else{
-          const urlDoc = new urlModel({originalUrl: newUrl, newUrl: Math.floor(Math.random()*1000)})
+          const urlDoc = new newUrlModel({originalUrl: newUrl, newUrl: Math.floor(Math.random()*1000)})
           urlDoc.save(function(err, data){
             if(err){
               console.log("error occured")
             }else{
               console.log("created new doc in db "+ data)
-              toBeSent = Object.assign({original_url: data.originalUrl, short_url: data.newUrl})
+              res.json({original_url: data.originalUrl, short_url: data.newUrl})
             }
           })
         }
       })
-      console.log("printing tobe "+toBeSent)
-      res.json(toBeSent); 
     }
   })
 });
