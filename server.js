@@ -25,7 +25,7 @@ app.use(cors());
 app.use('/public', express.static(process.cwd() + '/public'));
 
 const urlSchema = new mongoose.Schema({
-  storedUrl:[String]
+  originalUrl:{ type:String, required: true}
 });
 const urlModel = mongoose.model("urlModel", urlSchema);
 
@@ -43,7 +43,18 @@ app.post("/api/shorturl/new", function (req, res) {
     if(err){
       res.json({"error":"invalid URL"});
     }else{
-     res.json({greeting: 'hello API'}); 
+      urlModel.find({originalUrl: newUrl}, function(err, data){
+        
+      })
+      const urlDoc = new urlModel({originalUrl: newUrl})
+      urlDoc.save(function(err, data){
+        if(err){
+          console.log("error occured")
+        }else{
+          console.log(data.id);
+        }
+      })
+      res.json({greeting: 'hello API'}); 
     }
   })
 });
