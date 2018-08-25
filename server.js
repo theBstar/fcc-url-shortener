@@ -66,6 +66,11 @@ app.post("/api/shorturl/new", function (req, res) {
   })
 });
 
+// get request to redirect the user to the original url
+app.get("/api/shorturl/:shortUrl", function(req, res){
+  console.log(req.params.shortUrl)
+  new
+})
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
