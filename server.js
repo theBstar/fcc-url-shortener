@@ -25,7 +25,8 @@ app.use(cors());
 app.use('/public', express.static(process.cwd() + '/public'));
 
 const urlSchema = new mongoose.Schema({
-  originalUrl:{ type:String, required: true}
+  originalUrl:{ type:String, required: true},
+  newUrl: Number
 });
 const urlModel = mongoose.model("urlModel", urlSchema);
 
@@ -38,23 +39,27 @@ app.get('/', function(req, res){
 // your first API endpoint... 
 app.post("/api/shorturl/new", function (req, res) {
   let newUrl = req.body.url.replace(/https?:\/\//, "")
-  console.log(newUrl);
+  let toBeSent = {};
   dns.lookup(newUrl, function(err){
     if(err){
-      res.json({"error":"invalid URL"});
+      console.log("it is not a valid url")
+      toBeSent({"error":"invalid URL"});
     }else{
       urlModel.find({originalUrl: newUrl}, function(err, data){
-        
-      })
-      const urlDoc = new urlModel({originalUrl: newUrl})
-      urlDoc.save(function(err, data){
-        if(err){
-          console.log("error occured")
+        if(!err){
+          toBeSent = Object.assign({original_url: data.originalUrl, short_url: data.newUrl})
         }else{
-          console.log(data.id);
+          const urlDoc = new urlModel({originalUrl: newUrl, newUrl: Math.floor(Math.random()*1000)})
+          urlDoc.save(function(err, data){
+            if(err){
+              console.log("error occured")
+            }else{
+              toBeSent = Object.assign({original_url: data.originalUrl, short_url: data.newUrl})
+            }
+          })
         }
       })
-      res.json({greeting: 'hello API'}); 
+      res.json(toBeSent); 
     }
   })
 });
